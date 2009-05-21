@@ -1,0 +1,49 @@
+dm-yaml-adapter
+
+This adapter is for DataMapper. This allows you to persist objects to YAML files and still have the query capabilities of DataMapper. I wouldn't scale this out to a zillion files, but if you have a lot of read action on a small database this could be the project for you. OR use it to better understand DataMapper.
+
+
+Example usage:
+
+We have to tell datamapper where we will be storing the YAML files. 
+directory tells the adapter where to store.
+
+DataMapper.setup(:default, {:adapter => 'yaml', :directory => 'db'})
+
+
+Trying it out: 
+
+If you want some examples of defining classes, check out the spec directory.
+
+Anyway, assuming you have a decent environment set up, you can try out some examples.
+
+If you want to use irb to try some of this interactively, try 'irb' and then
+> load 'irbhelper.irb'
+
+That sets up a basic environment with User and Post resources already defined.
+
+irb(main):001:0> load 'irbhelper.irb'
+=> true
+irb(main):002:0> u = User.create(:name => 'Bob', :age => 55)
+=> #<User user_id=1 name="Bob" age=55>
+irb(main):003:0> u.save
+=> true
+irb(main):004:0> User.all
+=> [#<User user_id=1 name="Bob" age=55>]
+irb(main):005:0> 
+
+If you use another window to check out the db directory you should have a nice User directory with a 1.yaml file in there, with the data of Bob.
+
+You can also add another object and start playing around with some queries.
+
+irb(main):005:0> User.create(:name => 'Sue', :age => 32)
+=> #<User user_id=2 name="Sue" age=32>
+irb(main):006:0> User.all(:age => 32)
+=> [#<User user_id=2 name="Sue" age=32>]
+irb(main):007:0> User.all
+=> [#<User user_id=1 name="Bob" age=55>, #<User user_id=2 name="Sue" age=32>]
+irb(main):008:0> u.destroy
+=> true
+irb(main):009:0> User.all
+=> [#<User user_id=2 name="Sue" age=32>]
+irb(main):010:0> 
