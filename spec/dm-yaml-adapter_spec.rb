@@ -7,19 +7,15 @@ require Pathname(__FILE__).dirname.expand_path + 'spec_helper'
 describe DataMapper::Adapters::YamlAdapter do
   before(:all) do
 	  @adapter = DataMapper.setup(:default, {:adapter => 'yaml', :directory => 'db'})
+	  User.auto_migrate!
           @user1 = User.create(:name => 'tom')
           @user2 = User.create(:name => 'jim')
-  end
-   
-  it "should be true" do
-     true.should == true
   end
 
   describe "CRUD" do
   
      describe "create" do
         it "should create" do
-           @user1.should be_an_instance_of(User)
            @user1.user_id.should_not == nil
         end 
      end
@@ -32,7 +28,7 @@ describe DataMapper::Adapters::YamlAdapter do
 			     puts e
 			     puts e.backtrace
 		     end
-		     users.should_not == nil
+		     users.size.should_not == 0
 	     end
      end
      
@@ -46,7 +42,7 @@ describe DataMapper::Adapters::YamlAdapter do
      describe "find not" do
              it "should find someone with a not clause" do
                      users = User.all(:user_id.not => @user1.id) 
-                     users.size.should == 1 
+                     users.first.user_id.should_not == @user1.id 
              end
      end
  
